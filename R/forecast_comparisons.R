@@ -298,6 +298,7 @@ reverse_differencing <- function(time_series, differencing_order){
 #'
 #' @description passes time series produced by convert_to_raw_time_series to different forecasting algorithms and then collates the results
 #' @export
+#' @param all_forecasting_functions list of lists describing the names of forecasting functions to be compared. Follow structure of list of same name exported from module 
 #' @param time_series output of convert_to_raw_time_series
 #' @param location where was data taken from for plot title
 #' @param ab name of antibiotic for plot title
