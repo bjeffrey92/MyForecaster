@@ -182,7 +182,7 @@ ME <- function(testing_data, point_forecasts){
 
 SMAPE <- function(testing_data, point_forecasts){
   
-  SMAPE <- sMAPE(testing_data, point_forecasts)
+  SMAPE <- TSPred::sMAPE(testing_data, point_forecasts)
   return(SMAPE)
 }
 
@@ -321,7 +321,7 @@ do_forecasts <- function(all_forecasting_functions, time_series, forecasting_hor
   LB_p_value <- Box.test(training_data, type = 'Lj')$p.value #Ljung-Box test to assess difference from white noise
   LB_p_value <- round(LB_p_value, digits = 3)
 
-  plot <- autoplot(time_series) #base layer of plot to be added to
+  plot <- forecast::autoplot(time_series) #base layer of plot to be added to
 
   output_list <- list(organism,
                       location,
@@ -394,9 +394,9 @@ do_forecasts <- function(all_forecasting_functions, time_series, forecasting_hor
   filename <- paste0(organism, location, '_', ab, '_forecasting_horizon:',
                       forecasting_horizon, '.png')
   filename <- gsub(' ', '_', filename) #remove spaces from file name
-  plot <- plot + xlab('Year') + ylab('Percetage Resistance') +
-          ggtitle(plot_title)
-  ggsave(filename)
+  plot <- plot + ggplot2::xlab('Year') + ggplot2::ylab('Percetage Resistance') +
+          ggplot2::ggtitle(plot_title)
+  ggplot2::ggsave(filename)
 
   return(output_list)
 }

@@ -15,20 +15,22 @@ library(prophet)
 
 apply_limits <- function(forecast){
 
-  for (number in 1:length(forecast)){
-    item <- forecast[[number]]
-
-    for (horizon in 1:length(item)){
-      horizon_value <- item[[horizon]]
-
-      if (horizon_value < 0){
-        horizon_value <- 0
-      } else if (horizon_value > 100){
-        horizon_value <- 100
+  for (number in 1:5){
+    if (number != 4){
+      item <- forecast[[number]]
+      for (horizon in 1:length(item)){
+        horizon_value <- item[[horizon]]
+        if (is.na(horizon_value)){  
+          #do nothing 
+        } else if (horizon_value < 0){
+          horizon_value <- 0
+        } else if (horizon_value > 100){
+          horizon_value <- 100
+        }
+        item[[horizon]] <- horizon_value
       }
-      item[[horizon]] <- horizon_value
+      forecast[[number]] <- item
     }
-    forecast[[number]] <- item
   }
   return(forecast)
 }
