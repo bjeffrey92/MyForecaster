@@ -24,7 +24,7 @@ write_output_file_headers <- function(output_file){
                   'Ljung-Box_test_P_value', 'Mean_of_Training_Data',
                   'Average_Trend_of_Training_Data','Variance_of_Training_Data')
 
-  for (forecast_name in names(all_forecasting_functions)){
+  for (forecast_name in names(some_forecasting_functions)){
     headers[[length(headers) + 1]] <- paste0(forecast_name, '_ME')
     headers[[length(headers) + 1]] <- paste0(forecast_name, '_RMSE')
     headers[[length(headers) + 1]] <- paste0(forecast_name, '_sMAPE')
