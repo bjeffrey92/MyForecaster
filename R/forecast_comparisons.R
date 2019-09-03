@@ -373,25 +373,25 @@ do_forecasts <- function(all_forecasting_functions, time_series, forecasting_hor
     } else{
       forecast_ME <- NA
       forecast_RMSE <- NA
-      foreacst_PI_Width <- NA
+      forecast_PI_Width <- NA
       forecast_PI_Accuracy <- NA
       forecast_sMAPE <- NA
       residuals_mean <- NA
       pormanteau_test_p_value <- NA
     }
-    output_list[[length(output_list) + 1]] <- forecast_ME
-    output_list[[length(output_list) + 1]] <- forecast_RMSE
-    output_list[[length(output_list) + 1]] <- forecast_sMAPE
-    output_list[[length(output_list) + 1]] <- forecast_PI_Width
-    output_list[[length(output_list) + 1]] <- forecast_PI_Accuracy
-    output_list[[length(output_list) + 1]] <- residuals_mean
-    output_list[[length(output_list) + 1]] <- pormanteau_test_p_value
+    output_list[[paste(forecast_name, 'ME', sep = '_')]] <- forecast_ME
+    output_list[[paste(forecast_name, 'RMSE', sep = '_')]] <- forecast_RMSE
+    output_list[[paste(forecast_name, 'sMAPE', sep = '_')]] <- forecast_sMAPE
+    output_list[[paste(forecast_name, 'PI_width', sep = '_')]] <- forecast_PI_Width
+    output_list[[paste(forecast_name, 'PI_accuracy', sep = '_')]] <- forecast_PI_Accuracy
+    output_list[[paste(forecast_name, 'residuals_mean', sep = '_')]] <- residuals_mean
+    output_list[[paste(forecast_name, 'pormanteau_test_p_value', sep = '_')]] <- pormanteau_test_p_value
   }
 
   ##PLOT FORECASTS AND REAL DATA
   plot_title <- paste(organism, 'percentage resistance to', ab, 'in', location,
                       '(h =', forecasting_horizon, ')')
-  filename <- paste0(organism, '_', location, '_', ab, '_forecasting_horizon:',
+  filename <- paste0(organism, '_', location, '_', ab, '_forecasting_horizon',
                       forecasting_horizon, '.png')
   filename <- gsub(' ', '_', filename) #remove spaces from file name
   plot <- plot + ggplot2::xlab('Year') + ggplot2::ylab('Percetage Resistance') +

@@ -4,10 +4,12 @@
 \alias{write_output_file_headers}
 \title{Wrtites the headers of an output file}
 \usage{
-write_output_file_headers(output_file)
+write_output_file_headers(output_file, forecasting_functions)
 }
 \arguments{
 \item{output_file}{name of output file}
+
+\item{forecasting_functions}{list of forecasting functions used}
 }
 \description{
 writes the headers to output file

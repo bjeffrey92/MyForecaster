@@ -8,7 +8,7 @@
 write_output <- function(output_list, output_file){
 
   write.table(rbind(output_list), file = output_file, append = TRUE,
-              row.names = FALSE, col.names = FALSE, quote = FALSE, sep = ',')
+              row.names = FALSE, col.names = FALSE, quote = FALSE, sep = '\t')
 }
 
 #' Wrtites the headers of an output file
@@ -16,15 +16,16 @@ write_output <- function(output_list, output_file){
 #' @description writes the headers to output file
 #' @export
 #' @param output_file name of output file 
+#' @param forecasting_functions list of forecasting functions used 
 
-write_output_file_headers <- function(output_file){
+write_output_file_headers <- function(output_file, forecasting_functions){
 
 
   headers <- list('Organism', 'Location','Ab', 'Forecasting_Horizon',
                   'Ljung-Box_test_P_value', 'Mean_of_Training_Data',
                   'Average_Trend_of_Training_Data','Variance_of_Training_Data')
 
-  for (forecast_name in names(some_forecasting_functions)){
+  for (forecast_name in names(forecasting_functions)){
     headers[[length(headers) + 1]] <- paste0(forecast_name, '_ME')
     headers[[length(headers) + 1]] <- paste0(forecast_name, '_RMSE')
     headers[[length(headers) + 1]] <- paste0(forecast_name, '_sMAPE')
@@ -36,5 +37,5 @@ write_output_file_headers <- function(output_file){
   }
 
   write.table(headers, file = output_file, row.names = FALSE, col.names = FALSE,
-    sep = ',', quote = FALSE)
+    sep = '\t', quote = FALSE)
 }
