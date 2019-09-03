@@ -394,7 +394,7 @@ do_forecasts <- function(all_forecasting_functions, time_series, forecasting_hor
   filename <- paste0(organism, '_', location, '_', ab, '_forecasting_horizon',
                       forecasting_horizon)
   filename <- stringr::str_replace_all(filename, '[.]', '-') #remove any dots from filename
-  filename <- paste0(filename, , '.png')
+  filename <- paste0(filename, '.png')
   filename <- gsub(' ', '_', filename) #remove spaces from file name
   plot <- plot + ggplot2::xlab('Year') + ggplot2::ylab('Percetage Resistance') +
           ggplot2::ggtitle(plot_title)
