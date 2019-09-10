@@ -310,11 +310,15 @@ t_and_l_forecast <- function(training_data, forecasting_horizon, frequency,
   decomposed_ts <- EMD::emd(training_data)# performs emd, returns all IMFs and the residual
   components <- list()
 
-  for (i in 1:ncol(decomposed_ts$imf)){
-    components[[length(components) + 1]] <- decomposed_ts$imf[,i] #appends each imf to components list
+  #if there are no imfs then the residue will be taken as the only component for forecasting
+  if (decomposed_ts$nimf == 0){
+    components[[1]] <- decomposed_ts$residue
+  } else{
+    for (i in 1:ncol(decomposed_ts$imf)){
+      components[[length(components) + 1]] <- decomposed_ts$imf[,i] #appends each imf to components list
+    }
+    components[[length(components) + 1]] <- decomposed_ts$residue
   }
-  components[[length(components) + 1]] <- decomposed_ts$residue
-
 
   #model determines which components are included, this is called filter in t and l paper
   count_zero_crossings <- function(signal){
