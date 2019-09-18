@@ -344,6 +344,10 @@ t_and_l_forecast <- function(training_data, forecasting_horizon, frequency,
         if (zero_crossings < length(component)/10){
           include <- TRUE
         }
+      } else if (frequency == 4){ #if data is quarterly
+        if (zero_crossings < length(component)){ #approximate to ten week filter
+          include <- TRUE
+        }
       } else{
         stop('Unknown frequncy value for DECF filter')
       }
