@@ -396,8 +396,10 @@ t_and_l_forecast <- function(training_data, forecasting_horizon, frequency,
       lag_matrix <- do.call('cbind', all_lagged_components) #create matrix of all lagged data
       lag_matrix <- na.omit(lag_matrix) #drop rows with na
 
-      f_l <- fractaldim::fd.estim.boxcount(lag_matrix)$fd #calculate fractal dimension of matrix using box counting algorithm
-      lagged_componnent_fl_values <- c(lagged_componnent_fl_values, f_l)
+      if (nrow(lag_matrix) >= 3){ #doesn't make sense to calculate fractal dimension if less than 3 rows in lag matrix
+        f_l <- fractaldim::fd.estim.boxcount(lag_matrix)$fd #calculate fractal dimension of matrix using box counting algorithm
+        lagged_componnent_fl_values <- c(lagged_componnent_fl_values, f_l)
+      }
     }
 
     #estimate point where slope flattens using definition in paper cited above
@@ -475,7 +477,9 @@ t_and_l_forecast <- function(training_data, forecasting_horizon, frequency,
                 start = time(training_data)[[length(training_data)]] +
                         1/frequency,
                 frequency = frequency)
-  return(forecast)
+  output <- list(forecast, forecast, forecast, forecast, 
+                rep(NaN, length(training_data)))
+  return(output)
 }
 
 
