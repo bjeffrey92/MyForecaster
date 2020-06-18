@@ -307,7 +307,7 @@ reverse_differencing <- function(time_series, differencing_order){
 #' @param apply_limits true or false, limit forecasts to 0-100
 
 do_forecasts <- function(all_forecasting_functions, time_series, forecasting_horizon,
-                        max_forecasting_horizon, location, ab, organism,
+                        max_forecasting_horizon, location, ab, PI, organism,
                         frequency, apply_limits = TRUE){
 
   last_date <- time(time_series)[[length(time_series)]]
@@ -347,8 +347,22 @@ do_forecasts <- function(all_forecasting_functions, time_series, forecasting_hor
       differencing_order <- NA
     }
 
-    forecast <- get(forecast_func)(training_data,
-      forecasting_horizon * frequency, frequency, apply_limits) #get evaluates function text stored in functions list
+    #if prediction intervals are required by the function
+    if (forecast_func %in% c("naive_forecast", 
+                            "naive_forecast_with_drift",
+                            "mean_forecast",
+                            "ets_forecast", 
+                            "arima_forecast", 
+                            "nn_autoregression_forecast")){
+      forecast <- get(forecast_func)(training_data,
+        forecasting_horizon * frequency, frequency, 
+        PI, apply_limits) #get evaluates function text stored in functions list
+    }else{
+      forecast <- get(forecast_func)(training_data,
+        forecasting_horizon * frequency, frequency, 
+        apply_limits)
+    }
+
 
     if (!is.na(differencing_order)){
       for (i in 1:length(forecast)){
