@@ -4,7 +4,7 @@
 \alias{mean_forecast}
 \title{Mean Forecast}
 \usage{
-mean_forecast(training_data, forecasting_horizon, frequency,
+mean_forecast(training_data, forecasting_horizon, frequency, PI = 95,
   apply_limits = TRUE)
 }
 \arguments{
@@ -13,6 +13,8 @@ mean_forecast(training_data, forecasting_horizon, frequency,
 \item{forecasting_horizon}{time in units of training_data to be forecasted}
 
 \item{frequency}{12 for months, 4 for quarters etc}
+
+\item{PI}{width of prediction intervals, default is 95 (ie 95 percent)}
 
 \item{apply_limits}{keep data with 0 and 100, default is TRUE}
 }

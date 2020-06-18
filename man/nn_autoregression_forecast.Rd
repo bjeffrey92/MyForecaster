@@ -5,7 +5,7 @@
 \title{Neural Network Autoregression Forecast}
 \usage{
 nn_autoregression_forecast(training_data, forecasting_horizon, frequency,
-  apply_limits = TRUE)
+  PI = 95, apply_limits = TRUE)
 }
 \arguments{
 \item{training_data}{time series to be forecasted}
@@ -13,6 +13,8 @@ nn_autoregression_forecast(training_data, forecasting_horizon, frequency,
 \item{forecasting_horizon}{time in units of training_data to be forecasted}
 
 \item{frequency}{12 for months, 4 for quarters etc}
+
+\item{PI}{width of prediction intervals, default is 95 (ie 95 percent)}
 
 \item{apply_limits}{keep data with 0 and 100, default is TRUE}
 }

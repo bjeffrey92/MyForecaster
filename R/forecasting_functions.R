@@ -43,13 +43,16 @@ apply_limits <- function(forecast){
 #' @param forecasting_horizon time in units of training_data to be forecasted
 #' @param frequency 12 for months, 4 for quarters etc
 #' @param apply_limits keep data with 0 and 100, default is TRUE 
+#' @param PI width of prediction intervals, default is 95 (ie 95 percent)
 
-mean_forecast <- function(training_data, forecasting_horizon, frequency,
+mean_forecast <- function(training_data, forecasting_horizon, 
+                          frequency, PI = 95, 
                           apply_limits = TRUE){
 
-  mean_forecast <- forecast::meanf(training_data, forecasting_horizon)
-  output <- list(mean_forecast[]$mean, mean_forecast[]$lower[,2], #returns point forecast and upper and lower 95% ;rediction intervals
-                mean_forecast[]$upper[,2], mean_forecast,
+  mean_forecast <- forecast::meanf(training_data, forecasting_horizon,
+                                  level = PI)
+  output <- list(mean_forecast[]$mean, mean_forecast[]$lower, #returns point forecast and upper and lower 95% ;rediction intervals
+                mean_forecast[]$upper, mean_forecast,
                 mean_forecast[]$residuals)
 
   if (apply_limits){
@@ -65,12 +68,13 @@ mean_forecast <- function(training_data, forecasting_horizon, frequency,
 #' @inheritParams mean_forecast
 
 
-naive_forecast <- function(training_data, forecasting_horizon, frequency,
-                            apply_limits = TRUE){
+naive_forecast <- function(training_data, forecasting_horizon, 
+                            frequency, PI = 95, apply_limits = TRUE){
 
-  naive_forecast <- forecast::rwf(training_data, forecasting_horizon, drift = FALSE)
-  output <- list(naive_forecast[]$mean, naive_forecast[]$lower[,2], #returns point forecast and upper and lower 95% ;rediction intervals
-                naive_forecast[]$upper[,2], naive_forecast,
+  naive_forecast <- forecast::rwf(training_data, forecasting_horizon, 
+                                  level = PI, drift = FALSE)
+  output <- list(naive_forecast[]$mean, naive_forecast[]$lower, #returns point forecast and upper and lower 95% ;rediction intervals
+                naive_forecast[]$upper, naive_forecast,
                 naive_forecast[]$residuals)
 
   if (apply_limits){
@@ -86,16 +90,19 @@ naive_forecast <- function(training_data, forecasting_horizon, frequency,
 #' @inheritParams mean_forecast
 
 naive_forecast_with_drift <- function(training_data, forecasting_horizon,
-                                      frequency, apply_limits = TRUE){
+                                      frequency, PI = 95, 
+                                      apply_limits = TRUE){
 
   if (var(training_data) == 0){ #will not work if all values in training set are equal
     return(NA)
   } else {
-    naive_forecast_with_drift <- forecast::rwf(training_data, forecasting_horizon,
-      drift = TRUE)
+    naive_forecast_with_drift <- forecast::rwf(training_data, 
+                                              forecasting_horizon,
+                                              level = PI,
+                                              drift = TRUE)
     output <- list(naive_forecast_with_drift[]$mean,
-                  naive_forecast_with_drift[]$lower[,2], #returns point forecast and upper and lower 95% ;rediction intervals
-                  naive_forecast_with_drift[]$upper[,2],
+                  naive_forecast_with_drift[]$lower, #returns point forecast and upper and lower 95% ;rediction intervals
+                  naive_forecast_with_drift[]$upper,
                   naive_forecast_with_drift,
                   naive_forecast_with_drift[]$residuals)
 
@@ -114,13 +121,13 @@ naive_forecast_with_drift <- function(training_data, forecasting_horizon,
 #' @export
 #' @inheritParams mean_forecast
 
-ets_forecast <- function(training_data, forecasting_horizon, frequency,
-                        apply_limits = TRUE){
+ets_forecast <- function(training_data, forecasting_horizon, 
+                        frequency, PI = 95, apply_limits = TRUE){
 
   fit <- forecast::ets(training_data)
-  ets_forecast <- forecast::forecast(fit, h = forecasting_horizon)
-  output <- list(ets_forecast[]$mean, ets_forecast[]$lower[,2], #returns point forecast and upper and lower 95% ;rediction intervals
-                ets_forecast[]$upper[,2], fit, fit$residuals)
+  ets_forecast <- forecast::forecast(fit, level = PI, h = forecasting_horizon)
+  output <- list(ets_forecast[]$mean, ets_forecast[]$lower, #returns point forecast and upper and lower 95% ;rediction intervals
+                ets_forecast[]$upper, fit, fit$residuals)
 
   if (apply_limits){
     output <- apply_limits(output)
@@ -136,13 +143,15 @@ ets_forecast <- function(training_data, forecasting_horizon, frequency,
 #' @export
 #' @inheritParams mean_forecast
 
-arima_forecast <- function(training_data, forecasting_horizon, frequency,
+arima_forecast <- function(training_data, forecasting_horizon, 
+                          frequency, PI = 95,
                           apply_limits = TRUE){
 
   fit <- forecast::auto.arima(training_data)
-  arima_forecast <- forecast::forecast(fit, h = forecasting_horizon)
-  output <- list(arima_forecast[]$mean, arima_forecast[]$lower[,2], #returns point forecast and upper and lower 95% ;rediction intervals
-                arima_forecast[]$upper[,2], fit, fit$residuals)
+  arima_forecast <- forecast::forecast(fit, level = PI, 
+                                      h = forecasting_horizon)
+  output <- list(arima_forecast[]$mean, arima_forecast[]$lower, #returns point forecast and upper and lower 95% ;rediction intervals
+                arima_forecast[]$upper, fit, fit$residuals)
 
   if (apply_limits){
     output <- apply_limits(output)
@@ -159,14 +168,16 @@ arima_forecast <- function(training_data, forecasting_horizon, frequency,
 #' @inheritParams mean_forecast
 
 nn_autoregression_forecast <- function(training_data, forecasting_horizon,
-                                      frequency, apply_limits = TRUE){
-
+                                      frequency, PI = 95, 
+                                      apply_limits = TRUE){
 
   fit <- forecast::nnetar(training_data)
-  nnetar_forecast <- forecast::forecast(fit, PI = TRUE, h = forecasting_horizon) #fits model and generates a point forecast
+  nnetar_forecast <- forecast::forecast(fit, PI = TRUE, 
+                                        level = PI, 
+                                        h = forecasting_horizon) #fits model and generates a point forecast
 
-  output <- list(nnetar_forecast[]$mean, nnetar_forecast[]$lower[,2], #returns point forecast and upper and lower 95% ;rediction intervals
-                nnetar_forecast[]$upper[,2], fit, fit$residuals)
+  output <- list(nnetar_forecast[]$mean, nnetar_forecast[]$lower, #returns point forecast and upper and lower 95% ;rediction intervals
+                nnetar_forecast[]$upper, fit, fit$residuals)
 
   if (apply_limits){
     output <- apply_limits(output)
@@ -185,7 +196,10 @@ nn_autoregression_forecast <- function(training_data, forecasting_horizon,
 #'
 #' @description fits an SVR model and extrapolates from it to produce forecasts
 #' @export
-#' @inheritParams mean_forecast
+#' @param training_data time series to be forecasted
+#' @param forecasting_horizon time in units of training_data to be forecasted
+#' @param frequency 12 for months, 4 for quarters etc
+#' @param apply_limits keep data with 0 and 100, default is TRUE 
 
 svr_forecast <- function(training_data, forecasting_horizon, frequency,
                         apply_limits = TRUE){
@@ -218,7 +232,7 @@ svr_forecast <- function(training_data, forecasting_horizon, frequency,
 #'
 #' @description fits a theta model first described by V.Assimakopoulos annd K.Nikolopoulos, 2000
 #' @export
-#' @inheritParams mean_forecast
+#' @inheritParams svr_forecast
 
 standard_theta_forecast <- function(training_data, forecasting_horizon,
                                     frequency, apply_limits = TRUE){
@@ -253,7 +267,7 @@ standard_theta_forecast <- function(training_data, forecasting_horizon,
 #'
 #' @description fits dynamic optimised theta model as developed by Fiorucci et al 2016
 #' @export
-#' @inheritParams mean_forecast
+#' @inheritParams svr_forecast
 
 dotm_forecast <- function(training_data, forecasting_horizon, frequency,
                           apply_limits = TRUE){
@@ -288,7 +302,7 @@ dotm_forecast <- function(training_data, forecasting_horizon, frequency,
 #'
 #' @description fits the model developed by Teodoro and Lovis, 2013
 #' @export
-#' @inheritParams mean_forecast
+#' @inheritParams svr_forecast
 #' @param filter filter to be used for selecting components of EMD for KNN forecasting. Default is DECF
 
 t_and_l_forecast <- function(training_data, forecasting_horizon, frequency,
@@ -487,7 +501,7 @@ t_and_l_forecast <- function(training_data, forecasting_horizon, frequency,
 #'
 #' @description Applies facebooks prophet algorithm to make forecasts
 #' @export
-#' @inheritParams mean_forecast
+#' @inheritParams svr_forecast
 
 prophet_forecasting <- function(training_data, forecasting_horizon, frequency,
                                 apply_limits = TRUE){
