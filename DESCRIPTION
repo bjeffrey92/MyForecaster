@@ -23,4 +23,5 @@ Imports:
 	fractaldim,
 	plyr,
 	dplyr,
-	e1071
+	e1071,
+	prophet
