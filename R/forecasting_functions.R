@@ -171,8 +171,16 @@ nn_autoregression_forecast <- function(training_data, forecasting_horizon,
                                       frequency, PI = 95, 
                                       apply_limits = TRUE){
 
-  fit <- forecast::nnetar(training_data)
-  nnetar_forecast <- forecast::forecast(fit, PI = TRUE, 
+  RMSE <- vector(mode="list", length = length(training_data)/2)
+  fits <- vector(mode="list", length = length(training_data)/2)
+  for (i in 1:length(training_data)){
+    fit <- forecast::nnetar(training_data, size = i)
+    res <- na.omit(fit$residuals)
+    RMSE[i] <- sqrt(sum(res^ 2) /length(res))
+    suppressWarnings(fits[i] <- fit)
+  }
+
+  nnetar_forecast <- forecast::forecast(fits[which.min(RMSE)], PI = TRUE, 
                                         level = PI, 
                                         h = forecasting_horizon) #fits model and generates a point forecast
 
