@@ -180,9 +180,11 @@ nn_autoregression_forecast <- function(training_data, forecasting_horizon,
     suppressWarnings(fits[i] <- fit)
   }
 
-  nnetar_forecast <- forecast::forecast(fits[which.min(RMSE)], PI = TRUE, 
-                                        level = PI, 
-                                        h = forecasting_horizon) #fits model and generates a point forecast
+  nnetar_forecast <- forecast::forecast(
+    forecast::nnetar(training_data, size = which.min(RMSE)), 
+    PI = TRUE, 
+    level = PI, 
+    h = forecasting_horizon) #fits model and generates a point forecast
 
   output <- list(nnetar_forecast[]$mean, nnetar_forecast[]$lower, #returns point forecast and upper and lower 95% ;rediction intervals
                 nnetar_forecast[]$upper, fit, fit$residuals)
