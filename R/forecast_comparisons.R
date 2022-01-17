@@ -393,7 +393,7 @@ do_forecasts <- function(all_forecasting_functions, time_series, forecasting_hor
       residuals_mean <- NA
       pormanteau_test_p_value <- NA
     }
-    output_list[[paste(forecast_name, 'forecast', sep = '_')]] <- forecast[[1]]
+    output_list[[paste(forecast_name, 'forecast', sep = '_')]] <- tail(forecast[[1]], 1)
     output_list[[paste(forecast_name, 'ME', sep = '_')]] <- forecast_ME
     output_list[[paste(forecast_name, 'RMSE', sep = '_')]] <- forecast_RMSE
     output_list[[paste(forecast_name, 'sMAPE', sep = '_')]] <- forecast_sMAPE
