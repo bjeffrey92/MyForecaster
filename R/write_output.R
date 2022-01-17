@@ -26,6 +26,7 @@ write_output_file_headers <- function(output_file, forecasting_functions){
                   'Average_Trend_of_Training_Data','Variance_of_Training_Data')
 
   for (forecast_name in names(forecasting_functions)){
+    headers[[length(headers) + 1]] <- paste0(forecast_name, '_forecast')
     headers[[length(headers) + 1]] <- paste0(forecast_name, '_ME')
     headers[[length(headers) + 1]] <- paste0(forecast_name, '_RMSE')
     headers[[length(headers) + 1]] <- paste0(forecast_name, '_sMAPE')
